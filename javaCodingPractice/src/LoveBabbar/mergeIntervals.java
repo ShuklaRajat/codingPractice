@@ -1,59 +1,22 @@
 package LoveBabbar;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 public class mergeIntervals {
-    public static int[][] removeElement(int[][] intervals, int index){
-        int[][] removedElementArr = new int[intervals.length-1][2];
 
-        for(int i=0, k=0; i< intervals.length; i++){
-            if(i==index){
-                continue;
-            } else {
-                removedElementArr[k] = intervals[i];
-                k++;
-            }
-        }
-
-        return removedElementArr;
-    }
-
-    public static int[][] sortArr(int[][] arr) {
-
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = i + 1; j < arr.length; j++) {
-                int tmp[];
-                if (arr[i][0] > arr[j][0]) {
-                    tmp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = tmp;
-                }
-            }
-        }
-        return arr;
-    }
     public static int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        LinkedList<int[]> merged = new LinkedList<>();
 
-        for(int i=0; i<intervals.length-1; i++){
-            if(intervals[i][1] >= intervals[i+1][0]){
-                if(intervals[i][0] < intervals[i+1][0]){
-                    if(intervals[i][1] < intervals[i+1][1]){
-                        intervals[i] = new int[]{intervals[i][0], intervals[i + 1][1]};
-                    } else {
-                        intervals[i] = new int[]{intervals[i][0], intervals[i][1]};
-                    }
-                }
-                else {
-                    if(intervals[i][1] < intervals[i+1][1]){
-                        intervals[i] = new int[]{intervals[i+1][0], intervals[i + 1][1]};
-                    } else {
-                        intervals[i] = new int[]{intervals[i+1][0], intervals[i][1]};
-                    }
-                }
-
-                intervals = removeElement(intervals, i+1);
+        for(int[] interval : intervals){
+            if(merged.isEmpty() || merged.getLast()[1] < interval[0]){
+                merged.add(interval);
+            } else {
+                merged.getLast()[1] = Math.max(interval[1], merged.getLast()[1]);
             }
         }
-
-        return intervals;
+        return merged.toArray(new int[merged.size()][]);
     }
 
 
@@ -61,7 +24,7 @@ public class mergeIntervals {
         int[][] intervals
 //                = {{1,3},{2,6},{8,10},{15,18}};
                         ={{1,4},{0,0}};
-        intervals = merge(sortArr(intervals));
+        intervals = merge(intervals);
 
         for(int i=0; i<intervals.length; i++){
             System.out.println(intervals[i][0] + " , " + intervals[i][1]);
